@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Books - Book Record System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style/Stylesheet.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo">
+                Senior High School Library / MCPI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="discoverbooks.html">Discover</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="homepage.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="books.html">My Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Books Content -->
+    <div class="container mt-5 p-5">
+        <!-- Error Message Container -->
+        <div id="bookErrorMessage" class="alert alert-danger" style="display: none;"></div>
+
+        <!-- Books Management Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Book Filters -->
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search books by title or author">
+                            </div>
+                        </div>
+                        <!-- Books Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="booksTable">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Status</th>
+                                        <th>Borrowed Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="booksTableBody">
+                                    <!-- Books will be dynamically populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div class="modal fade" id="editBookModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <input type="hidden" id="editBookId">
+                        <div class="mb-3">
+                            <label for="editBookTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editBookTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBookAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="editBookAuthor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editBookStatus" class="form-label">Status</label>
+                            <select class="form-select" id="editBookStatus" required>
+                                <option value="to-read">To Read</option>
+                                <option value="reading">Currently Reading</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Book</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    <!-- Custom Books JS -->
+    <script src="books.js"></script>
+</body>
+</html>

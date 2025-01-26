@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Books | School Library</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .book-card-img {
+            height: 300px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo">
+                Senior High School Library / MCPI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="discoverbooks.html">Discover</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="homepage.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="books.html">My Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Books Grid -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3>Browse Books</h3>
+                <br>
+                <div id="booksContainer" class="row row-cols-1 row-cols-md-4 g-4 card-container">
+                    <!-- Book cards will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include script.js BEFORE any inline scripts -->
+    <script src="script.js"></script>
+    <!-- <script src="config.js"></script> -->
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Custom JavaScript for Filtering and Search -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Loaded');
+            console.log('Window populateBooksList:', window.populateBooksList);
+            
+            try {
+                // Populate books using the function from script.js
+                window.populateBooksList([
+                    {
+                        id: 'book1',
+                        title: 'To Kill a Mockingbird',
+                        author: 'Harper Lee',
+                        genre: 'Fiction',
+                        status: 'Available',
+                        coverImage: 'https://via.placeholder.com/300x450?text=Mockingbird'
+                    },
+                    {
+                        id: 'book2',
+                        title: 'A Brief History of Time',
+                        author: 'Stephen Hawking',
+                        genre: 'Non-Fiction',
+                        status: 'Borrowed',
+                        coverImage: 'https://via.placeholder.com/300x450?text=Time+History'
+                    },
+                    {
+                        id: 'book3',
+                        title: '1984',
+                        author: 'George Orwell',
+                        genre: 'Fiction',
+                        status: 'Available',
+                        coverImage: 'https://via.placeholder.com/300x450?text=1984'
+                    }
+                ]);
+            } catch (error) {
+                console.error('Error populating books:', error);
+            }
+
+            const searchInput = document.getElementById('searchInput');
+            const filterButtons = document.querySelectorAll('.btn-group .btn');
+            const bookCards = document.querySelectorAll('.book-card');
+            const noBooksMessage = document.getElementById('noBooksMessage');
+
+            console.log('Search Input:', searchInput);
+            console.log('Filter Buttons:', filterButtons);
+            console.log('Book Cards:', bookCards);
+            console.log('No Books Message:', noBooksMessage);
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleBooks = 0;
+
+                bookCards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const author = card.querySelector('.card-text').textContent.toLowerCase();
+                    const genre = card.getAttribute('data-genre');
+                    const activeFilter = document.querySelector('.btn-group .btn.active').getAttribute('data-filter');
+
+                    const matchesSearch = title.includes(searchTerm) || author.includes(searchTerm);
+                    const matchesFilter = activeFilter === 'all' || genre === activeFilter;
+
+                    if (matchesSearch && matchesFilter) {
+                        card.style.display = 'block';
+                        visibleBooks++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Toggle no books message
+                noBooksMessage.classList.toggle('d-none', visibleBooks > 0);
+            });
+
+            // Filter functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+                    let visibleBooks = 0;
+
+                    bookCards.forEach(card => {
+                        const genre = card.getAttribute('data-genre');
+                        const matchesSearch = card.style.display !== 'none';
+                        const matchesFilter = filter === 'all' || genre === filter;
+
+                        if (matchesSearch && matchesFilter) {
+                            card.style.display = 'block';
+                            visibleBooks++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    // Toggle no books message
+                    noBooksMessage.classList.toggle('d-none', visibleBooks > 0);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

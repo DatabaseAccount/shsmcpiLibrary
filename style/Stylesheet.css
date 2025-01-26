@@ -1,0 +1,319 @@
+#nav_header {
+    background-color: #026AA2;
+}
+#header_text {
+    font-size: 24px;
+}
+#header_buttons {
+    margin-top: 1em;   
+}
+#header_buttons ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+#header_buttons ul li {
+    margin: 0 1em;
+}
+#header_buttons ul li a {
+    color: white;
+    text-decoration: none;
+}
+#btn_icon a {
+    font-size: 15px;
+}
+#btn_icon a:hover {
+    border-bottom: 2px solid black;
+    cursor: pointer;
+}
+
+#showMoreList li {
+    list-style: none;
+    text-decoration: none;
+    color: black;
+}
+
+#showMoreList li a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+#showMoreList li a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Import formal, professional fonts */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@300;400;600&display=swap');
+
+/* Global font styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #333;
+    scroll-behavior: smooth;
+    position: relative;
+}
+
+/* Headings with a more formal serif font */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Navbar specific styling */
+.navbar-brand {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: white !important;
+}
+
+.nav-link {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.nav-link:hover, .nav-link:focus {
+    color: white !important;
+    border-bottom: 2px solid white;
+}
+
+/* Card titles */
+.card-title {
+    font-family: 'Merriweather', serif;
+    font-weight: 600;
+}
+
+/* Buttons */
+.btn {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Form elements */
+.form-control, .form-select {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+}
+
+/* Additional refinements */
+.lead {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+}
+
+/* Ensure consistent text rendering */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Navigation Styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: #102A56 !important;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+    color: white;
+    z-index: 1000;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Navbar Logo Styling */
+.navbar-brand-logo {
+    height: 40px;
+    margin-right: 10px;
+    vertical-align: middle;
+    border-radius: 5px;
+    transition: transform 0.2s ease;
+}
+
+.navbar-brand-logo:hover {
+    transform: scale(1.1);
+}
+
+/* Search Container */
+.search-container {
+    margin-left: 15px;
+}
+
+.search-input {
+    max-width: 200px;
+}
+
+.search-btn {
+    color: white;
+    border-color: white;
+}
+
+.search-btn:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+/* Offcanvas Styles */
+.offcanvas {
+    background-color: #102A56;
+    color: white;
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.offcanvas-title {
+    color: white;
+}
+
+.offcanvas-body .nav-link {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.offcanvas-body .nav-link:hover {
+    color: white !important;
+}
+
+.dropdown-menu {
+    background-color: #102A56;
+    border: none;
+}
+
+.dropdown-item {
+    color: rgba(255,255,255,0.7);
+}
+
+.dropdown-item:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+#image-book3 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Section Styles */
+.section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+section {
+    padding-top: 60px;
+    margin-top: -60px;
+}
+
+#home {
+    background-color: #3498db;
+    color: white;
+    text-align: center;
+}
+
+#books {
+    background-color: #f1f1f1;
+}
+
+#about {
+    background-color: #2ecc71;
+    color: white;
+}
+
+#contact {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Book Grid */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.book-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card {
+    transition: transform 0.3s ease;
+    box-shadow: -2px 2px 14px 0px rgba(173,173,173,0.75);
+    -webkit-box-shadow: -2px 2px 14px 0px rgba(173,173,173,0.75);
+    -moz-box-shadow: -2px 2px 14px 0px rgba(173,173,173,0.75);
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 31em;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Contact Form */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+}
+
+form input, form textarea {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+form button {
+    padding: 0.75rem;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #34495e;
+}

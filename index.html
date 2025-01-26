@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Online ICT Library System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style/Stylesheet.css">
+</head>
+<body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="50">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="homepage.html">
+                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo">
+                Senior High School Library / MCPI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="vh-100 d-flex align-items-center bg-primary text-white text-center">
+        <div class="container">
+            <h1 class="display-5">Welcome to Senior High School ICT books Records</h1>
+            <p class="lead">Manage and track your book with ease</p>
+            <div class="mt-4">
+                <button id="loginBtn" class="btn btn-light text-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Log In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div id="loginErrorMessage" class="alert alert-danger" style="display: none;"></div>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">MCPI Account</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="loginEmail" placeholder="Enter your mcpi account" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-text">
+                                <a href="#" class="text-primary">Forgot Password?</a>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+                            </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <p class="mb-0">Don't have an account? 
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#signupModal" class="text-primary">Sign Up</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Book List Section -->
+    <section id="books" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Book Collection</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/algoBook.jpg " class="card-img-top p-2 w-100 h-80" alt="Algorithm 2">
+    
+                            <h5 class="card-title p-2">The Advent of The Algorithm</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> David Berlinski<br>
+                                <strong>Genre:</strong> Education <br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/physicalSci.jpeg" class="card-img-top p-2 w-100 h-90" alt="Algorithm 2">
+                            <h5 class="card-title p-2">Physical Sciences</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> Oliver Berkenstok<br>
+                                <strong>Genre:</strong> Sciene Education <br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/java.webp" class="card-img-top p-2 image-book3" alt="Algorithm 2">
+                            <h5 class="card-title">Book Title 3</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> Alice Johnson<br>
+                                <strong>Genre:</strong> Education
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/SQLbook.jpg" class="card-img-top p-2 image-book3" alt="Algorithm 2">
+                            <h5 class="card-title">Book Title 2</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> Jane Smith<br>
+                                <strong>Genre:</strong> Education
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/C++book.jpg" class="card-img-top p-2 image-book3" alt="Algorithm 2">
+                            <h5 class="card-title">Book Title 2</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> Jane Smith<br>
+                                <strong>Genre:</strong> Education
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <img src="images/javascriptbook.jpg" class="card-img-top p-2 image-book3" alt="Algorithm 2">
+                            <h5 class="card-title">Book Title 2</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> Jane Smith<br>
+                                <strong>Genre:</strong> Education
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="container-md p-5 text-center align-items-center">
+                    <div class="col" id="showMore">
+                        <ul class="list-unstyled" id="showMoreList">
+                            <li><a href="#">Show More Books</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // Enhanced Supabase library loading mechanism
+        function loadSupabaseScript(src, source) {
+            return new Promise((resolve, reject) => {
+                // Check if Supabase is already loaded
+                if (typeof window.supabase !== 'undefined') {
+                    resolve(window.supabase);
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+
+                script.onload = () => {
+                    console.log(`Supabase script loaded successfully from ${source}`);
+                    
+                    // Mark this source as successful
+                    if (window.scriptLoadAttempts && window.scriptLoadAttempts.supabase) {
+                        window.scriptLoadAttempts.supabase[source] = true;
+                    }
+
+                    // Expose Supabase library globally
+                    if (typeof window.supabase === 'undefined' && typeof supabase !== 'undefined') {
+                        window.supabase = supabase;
+                    }
+
+                    resolve(window.supabase);
+                };
+
+                script.onerror = () => {
+                    console.warn(`Failed to load Supabase script from ${source}:`, src);
+                    
+                    // Mark this source as failed
+                    if (window.scriptLoadAttempts && window.scriptLoadAttempts.supabase) {
+                        window.scriptLoadAttempts.supabase[source] = false;
+                    }
+
+                    reject(new Error(`Supabase script load failed from ${source}`));
+                };
+
+                document.head.appendChild(script);
+            });
+        }
+
+        // Attempt to load Supabase from multiple sources
+        async function initializeSupabaseLibrary() {
+            const sources = [
+                { url: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js', name: 'jsdelivr' },
+                { url: 'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js', name: 'unpkg' }
+            ];
+
+            // Initialize script load attempts tracking
+            window.scriptLoadAttempts = {
+                supabase: {
+                    jsdelivr: false,
+                    unpkg: false
+                }
+            };
+
+            for (const source of sources) {
+                try {
+                    await loadSupabaseScript(source.url, source.name);
+                    return; // Exit if successfully loaded
+                } catch (error) {
+                    console.warn(`Failed to load from ${source.name}:`, error);
+                }
+            }
+
+            // If all sources fail
+            const errorDisplay = document.getElementById('supabaseInitError');
+            if (errorDisplay) {
+                errorDisplay.textContent = 'Network Error: Unable to load Supabase library. Check your internet connection.';
+                errorDisplay.style.display = 'block';
+            }
+
+            // Dispatch library load failure event
+            window.dispatchEvent(new Event('supabaseLibraryLoadFailed'));
+        }
+
+        // Add event listener for library load failure
+        window.addEventListener('supabaseLibraryLoadFailed', () => {
+            alert('Failed to load authentication service. Please check your internet connection and reload the page.');
+        });
+
+        // Network and library initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check network connectivity first
+            const isNetworkAvailable = await checkNetworkConnectivity();
+            
+            if (!isNetworkAvailable) {
+                console.error('Network is not available');
+                return;
+            }
+
+            // Attempt to load Supabase library
+            await initializeSupabaseLibrary();
+        });
+    </script>
+
+    <!-- Error display element -->
+    <div id="supabaseInitError" class="alert alert-danger" style="display: none;"></div>
+
+    <script>
+        // Global script loading tracking and error handling
+        window.scriptLoadAttempts = {
+            supabase: {
+                jsdelivr: false,
+                unpkg: false
+            }
+        };
+
+        // Comprehensive script loading error handlers
+        function handleScriptLoadError(script, source) {
+            console.error(`Failed to load Supabase script from ${source}:`, script.src);
+            
+            // Mark this source as failed
+            if (window.scriptLoadAttempts && window.scriptLoadAttempts.supabase) {
+                window.scriptLoadAttempts.supabase[source] = false;
+            }
+
+            // Check if all sources have failed
+            const allSourcesFailed = Object.values(window.scriptLoadAttempts.supabase).every(status => status === false);
+            
+            if (allSourcesFailed) {
+                const errorDisplay = document.getElementById('supabaseInitError');
+                if (errorDisplay) {
+                    errorDisplay.textContent = `Network Error: Unable to load Supabase library. Check your internet connection.`;
+                    errorDisplay.style.display = 'block';
+                }
+                
+                // Trigger fallback or error handling
+                window.dispatchEvent(new Event('supabaseLibraryLoadFailed'));
+            }
+        }
+
+        function handleScriptLoadSuccess(script, source) {
+            console.log(`Supabase script successfully loaded from ${source}`);
+            
+            // Mark this source as successful
+            if (window.scriptLoadAttempts && window.scriptLoadAttempts.supabase) {
+                window.scriptLoadAttempts.supabase[source] = true;
+            }
+
+            // Expose Supabase library globally
+            if (typeof window.supabase === 'undefined' && typeof supabase !== 'undefined') {
+                window.supabase = supabase;
+            }
+        }
+
+        // Network connectivity check
+        function checkNetworkConnectivity() {
+            return new Promise((resolve, reject) => {
+                // Simple fetch to check internet connectivity
+                fetch('https://www.google.com', { 
+                    mode: 'no-cors', 
+                    cache: 'no-store' 
+                })
+                .then(() => {
+                    console.log('Network connection is active');
+                    resolve(true);
+                })
+                .catch((error) => {
+                    console.warn('No network connection detected:', error);
+                    
+                    const errorDisplay = document.getElementById('supabaseInitError');
+                    if (errorDisplay) {
+                        errorDisplay.textContent = 'No internet connection. Please check your network.';
+                        errorDisplay.style.display = 'block';
+                    }
+                    
+                    resolve(false);
+                });
+            });
+        }
+    </script>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Ensure global Supabase configuration
+        window.SUPABASE_CONFIG = SUPABASE_CONFIG;
+
+        // Network and library initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check network connectivity first
+            const isNetworkAvailable = await checkNetworkConnectivity();
+            
+            if (isNetworkAvailable) {
+                // Attempt to load Supabase library
+                await initializeSupabaseLibrary();
+            }
+        });
+    </script>
+
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="signupModalLabel">Create Your Account</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm">
+                        <div id="signupErrorMessage" class="alert alert-danger" style="display: none;"></div>
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control" id="signupName" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">MCPI Email</label>
+                            <input type="email" class="form-control" id="signupEmail" name="email" required placeholder="your.name@mcpi.edu.ph">
+                            <div class="form-text text-muted">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Only @mcpi.edu.ph email addresses are allowed
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="signupPassword" placeholder="Create a strong password" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Repeat your password" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-person-plus me-2"></i>Sign Up
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
