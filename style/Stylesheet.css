@@ -1,51 +1,224 @@
-#nav_header {
-    background-color: #026AA2;
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    line-height: 1.6;
 }
-#header_text {
-    font-size: 24px;
-}
-#header_buttons {
-    margin-top: 1em;   
-}
-#header_buttons ul {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-#header_buttons ul li {
-    margin: 0 1em;
-}
-#header_buttons ul li a {
+
+/* Navbar Styles */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
     color: white;
-    text-decoration: none;
-}
-#btn_icon a {
-    font-size: 15px;
-}
-#btn_icon a:hover {
-    border-bottom: 2px solid black;
-    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
-#showMoreList li {
-    list-style: none;
-    text-decoration: none;
-    color: black;
+.navbar-logo {
+    display: flex;
+    align-items: center;
 }
 
-#showMoreList li a {
-    text-decoration: none;
+.navbar-brand-logo {
+    max-height: 50px;
+    width: auto;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: #495057;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-item .nav-link:hover {
     color: #007bff;
-    font-weight: bold;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.navbar-nav .nav-item .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 50%;
+    background-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-item .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+/* Logout Link */
+.navbar-nav .nav-item .text-danger {
     transition: color 0.3s ease;
 }
 
-#showMoreList li a:hover {
-    color: #0056b3;
-    text-decoration: underline;
+.navbar-nav .nav-item .text-danger:hover {
+    color: #dc3545 !important;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .navbar-brand-logo {
+        max-height: 40px;
+    }
+    
+    .navbar-nav .nav-item .nav-link {
+        text-align: center;
+    }
+}
+
+/* Mobile and Responsive Improvements */
+@media (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .navbar {
+        padding: 0.5rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar-brand-logo {
+        max-height: 35px;
+        margin-right: 5px;
+    }
+
+    .navbar-nav .nav-item {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .book-card-img {
+        height: 200px;
+        width: 150px;
+    }
+
+    .book-card {
+        margin-bottom: 20px;
+    }
+
+    .search-section .input-group {
+        flex-direction: column;
+    }
+
+    .search-section .input-group .form-control,
+    .search-section .input-group .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination .page-item {
+        margin: 5px;
+    }
+
+    h1, h2, h3 {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Ultra Small Devices */
+@media (max-width: 480px) {
+    body {
+        font-size: 12px;
+    }
+
+    .navbar-brand {
+        font-size: 0.9rem;
+    }
+
+    .book-card-img {
+        height: 180px;
+        width: 120px;
+    }
+
+    .book-status {
+        font-size: 0.6rem;
+    }
+}
+
+/* Ensure proper scaling and touch targets */
+@media (max-width: 768px) {
+    * {
+        touch-action: manipulation;
+    }
+
+    .btn, .nav-link, .form-control {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
 }
 
 /* Import formal, professional fonts */
@@ -129,17 +302,6 @@ html {
 }
 
 /* Navigation Styles */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #102A56 !important;
-    padding: 0.5rem 0;
-    transition: all 0.3s ease;
-    color: white;
-    z-index: 1000;
-}
-
 .navbar-container {
     display: flex;
     justify-content: center;

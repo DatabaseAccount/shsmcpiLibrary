@@ -2,189 +2,537 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discover Books | School Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Discover Books - MCPI Library</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
     
     <!-- Custom CSS -->
     <style>
-        body {
-            background-color: #f4f6f9;
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand-logo {
+            max-height: 50px;
+            width: auto;
+            margin-right: 10px;
+            object-fit: contain;
         }
         .book-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
         }
         .book-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: scale(1.05);
         }
+        .book-image {
+            height: 250px;
+            object-fit: cover;
+        }
+        .search-section {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        
+        /* Book Image Styling */
         .book-card-img {
             height: 300px;
+            width: 200px;
             object-fit: cover;
+            object-position: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .book-card-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+        }
+
+        .book-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        /* Book Status Styling */
+        .book-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .book-status-available {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .book-status-borrowed {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* Book Genre Styling */
+        .book-genre {
+            font-size: 0.85rem;
+            font-style: italic;
+            border: 1px none #6c757d;
+            background-color: #A4BCFD;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 768px) {
+            .book-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .book-card-img {
+                margin-bottom: 10px;
+                max-width: 200px;
+                height: auto;
+            }
+
+            .search-section .input-group {
+                flex-direction: column;
+            }
+
+            .search-section .input-group .form-control,
+            .search-section .input-group .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            #booksGrid .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="homepage.html">
-                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo">
+            <a class="navbar-brand navbar-logo" href="homepage.html">
+                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo w-50 h-50">
                 Senior High School Library / MCPI
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="discoverbooks.html">Discover</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="homepage.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="discoverbooks.html">Discover</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="books.html">My Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="logoutButton">Logout</a>
+                        <a class="nav-link" href="#" id="profileLink">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="#" id="logoutLink">Logout</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container my-5">
-        <!-- Books Grid -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <h3>Browse Books</h3>
-                <br>
-                <div id="booksContainer" class="row row-cols-1 row-cols-md-4 g-4 card-container">
-                    <!-- Book cards will be dynamically inserted here -->
+    <!-- Search and Filter Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="bookSearchInput" placeholder="Search books by title, author, or genre" aria-label="Book Search" aria-describedby="searchButton">
+                        <button class="btn btn-primary" type="button" id="searchButton">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Books Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4" id="booksGrid">
+                <!-- Books will be dynamically populated here -->
+            </div>
+            
+            <!-- Pagination with mobile-friendly design -->
+            <nav aria-label="Book navigation" class="mt-4">
+                <ul class="pagination justify-content-center flex-wrap">
+                    <li class="page-item disabled m-1">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                            <i class="bi bi-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="page-item active m-1"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item m-1"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item m-1"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item m-1">
+                        <a class="page-link" href="#">
+                            Next <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+    <div class="modal fade" id="bookRequestModal" tabindex="-1" aria-labelledby="bookRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookRequestModalLabel">Request Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookRequestForm">
+                        <input type="hidden" id="requestBookId" name="bookId">
+                        <div class="mb-3">
+                            <label for="requestBookTitle" class="form-label">Book Title</label>
+                            <input type="text" class="form-control" id="requestBookTitle" readonly required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestBookAuthor" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="requestBookAuthor" readonly required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestBookGenre" class="form-label">Genre</label>
+                            <input type="text" class="form-control" id="requestBookGenre" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requestReason" class="form-label">Reason for Request <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="requestReason" rows="3" placeholder="Why do you want to read this book?" required minlength="10" maxlength="250"></textarea>
+                            <div class="form-text">10-250 characters</div>
+                        </div>
+                        <div class="alert alert-info d-none" id="requestFormFeedback" role="alert">
+                            <!-- Feedback messages will be dynamically inserted here -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="bookRequestForm" class="btn btn-primary" id="submitBookRequestBtn">Submit Request</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Include script.js BEFORE any inline scripts -->
-    <script src="script.js"></script>
-    <!-- <script src="config.js"></script> -->
+    <!-- Footer -->
+    <footer class="bg-light py-3 text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 MCPI Senior High School Library. All Rights Reserved.</p>
+        </div>
+    </footer>
 
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS and Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript for Filtering and Search -->
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
+    <!-- Configuration and Main Script -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- Discover Books Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM Loaded');
-            console.log('Window populateBooksList:', window.populateBooksList);
+        // Mock book data with added status
+        const books = [
+            {
+                title: 'The Advent of The Algorithm',
+                author: 'David Berlinski',
+                genre: 'Education',
+                cover: 'images/algoBook.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'A History of The Computer Machine',
+                author: 'Martin Campbell-Kelly and William Aspray',
+                genre: 'Education',
+                cover: 'images/hisotryofcomputer.jpg',
+                status: 'Borrowed'
+            },
+            {
+                title: 'Data Structures Using C',
+                author: 'Udit Agrawal',
+                genre: 'Programming',
+                cover: 'images/datastructC.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Introductory Discrete Mathematics',
+                author: 'Christopher Rhoades',
+                genre: 'Education',
+                cover: 'images/introdiscretemath.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Introduction to Information System 7th Edition',
+                author: 'R. Kelly Rainer and Brad Prince',
+                genre: 'Education',
+                cover: 'images/introIS.jpg',
+                status: 'Borrowed'
+            },
+            {
+                title: 'Computer Influence',
+                author: 'George Beekman',
+                genre: 'Education',
+                cover: 'images/computerinfluence.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Computer Networks 3rd Edition',
+                author: 'Andrew S. Tanenbaum',
+                genre: 'Education',
+                cover: 'images/ThirdEditionCompNetwork.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Foundation of Information Technology',
+                author: 'Preeti Saxena',
+                genre: 'Education',
+                cover: 'images/foundationofinfotech.jpg',
+                status: 'Borrowed'
+            },
+            {
+                title: 'Fundamentals of Computers, Operating Systems, Information Technology',
+                author: 'Akilesh Kumar Sahu',
+                genre: 'Education',
+                cover: 'images/fundamentalscomp.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Data Structures',
+                author: 'Deepak Gupta',
+                genre: 'Programming',
+                cover: 'images/datastructures.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'System Analysis and Design',
+                author: '3G E-Learning',
+                genre: 'Education',
+                cover: 'images/systemanalysis.jpg',
+                status: 'Borrowed'
+            },
+            {
+                title: 'Computer System and Programming in C',
+                author: 'Amit Kumar Mishra',
+                genre: 'Programming',
+                cover: 'images/computersystemandprogramming.jpg',
+                status: 'Available'
+            },
+            {
+                title: 'Modern Systems Analysis and Design 8th Edition', 
+                author: 'Joseph S. Valacich and Joey F. George',
+                genre: 'Education',
+                cover: 'images/mordernsystems.jpg',
+                status: 'Available'
+            },
+        ];
+
+        function renderBooks(filteredBooks) {
+            const booksGrid = document.getElementById('booksGrid');
+            booksGrid.innerHTML = ''; // Clear existing books
+
+            filteredBooks.forEach(book => {
+                const col = document.createElement('div');
+                col.className = 'col-12 col-sm-6 col-md-4 col-lg-3 mb-4';
+                
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card text-center h-100';
+                
+                const bookImage = document.createElement('img');
+                bookImage.src = book.cover;
+                bookImage.alt = book.title;
+                bookImage.className = 'book-card-img mb-3';
+                
+                const bookTitle = document.createElement('h5');
+                bookTitle.textContent = book.title;
+                bookTitle.className = 'book-title mb-2';
+                
+                const bookAuthor = document.createElement('p');
+                bookAuthor.textContent = book.author;
+                bookAuthor.className = 'book-author text-muted mb-2';
+                
+                const bookGenre = document.createElement('p');
+                bookGenre.textContent = book.genre;
+                bookGenre.className = 'book-genre text-muted mb-2';
+                
+                const bookStatus = document.createElement('span');
+                bookStatus.textContent = book.status;
+                bookStatus.className = `book-status ${book.status === 'Available' ? 'book-status-available' : 'book-status-borrowed'}`;
+                
+                // Request Book Button
+                const requestButton = document.createElement('button');
+                requestButton.textContent = 'Request Book';
+                requestButton.className = 'btn btn-primary btn-sm mt-2';
+                requestButton.addEventListener('click', () => {
+                    // Populate modal with book details
+                    document.getElementById('requestBookId').value = book.id || '';
+                    document.getElementById('requestBookTitle').value = book.title;
+                    document.getElementById('requestBookAuthor').value = book.author;
+                    document.getElementById('requestBookGenre').value = book.genre;
+                    
+                    // Show modal
+                    const bookRequestModal = new bootstrap.Modal(document.getElementById('bookRequestModal'));
+                    bookRequestModal.show();
+                });
+                
+                bookCard.appendChild(bookImage);
+                bookCard.appendChild(bookTitle);
+                bookCard.appendChild(bookAuthor);
+                bookCard.appendChild(bookGenre);
+                bookCard.appendChild(bookStatus);
+                bookCard.appendChild(requestButton);
+                
+                col.appendChild(bookCard);
+                booksGrid.appendChild(col);
+            });
+
+            // Add event listener for book request form
+            const bookRequestForm = document.getElementById('bookRequestForm');
+            bookRequestForm.addEventListener('submit', submitBookRequest);
+        }
+
+        // Initial render of all books
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBooks(books);
+        });
+    </script>
+    <script>
+        // Function to handle book request submission
+        async function submitBookRequest(event) {
+            event.preventDefault();
+            
+            // Get form elements
+            const bookId = document.getElementById('requestBookId').value;
+            const bookTitle = document.getElementById('requestBookTitle').value;
+            const bookAuthor = document.getElementById('requestBookAuthor').value;
+            const bookGenre = document.getElementById('requestBookGenre').value;
+            const requestReason = document.getElementById('requestReason').value;
+            
+            // Get submit button and feedback elements
+            const submitButton = document.getElementById('submitBookRequestBtn');
+            const feedbackElement = document.getElementById('requestFormFeedback');
+            
+            // Validate inputs
+            if (requestReason.length < 10 || requestReason.length > 250) {
+                showFeedback('Please provide a reason between 10 and 250 characters.', 'danger');
+                return;
+            }
             
             try {
-                // Populate books using the function from script.js
-                window.populateBooksList([
-                    {
-                        id: 'book1',
-                        title: 'To Kill a Mockingbird',
-                        author: 'Harper Lee',
-                        genre: 'Fiction',
-                        status: 'Available',
-                        coverImage: 'https://via.placeholder.com/300x450?text=Mockingbird'
-                    },
-                    {
-                        id: 'book2',
-                        title: 'A Brief History of Time',
-                        author: 'Stephen Hawking',
-                        genre: 'Non-Fiction',
-                        status: 'Borrowed',
-                        coverImage: 'https://via.placeholder.com/300x450?text=Time+History'
-                    },
-                    {
-                        id: 'book3',
-                        title: '1984',
-                        author: 'George Orwell',
-                        genre: 'Fiction',
-                        status: 'Available',
-                        coverImage: 'https://via.placeholder.com/300x450?text=1984'
-                    }
-                ]);
-            } catch (error) {
-                console.error('Error populating books:', error);
-            }
+                // Disable submit button to prevent multiple submissions
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Submitting...';
+                
+                // Clear previous feedback
+                showFeedback('', 'info', true);
+                
+                // Check if user is authenticated
+                const { data: { user } } = await supabase.auth.getUser();
+                if (!user) {
+                    showFeedback('Please log in to request a book.', 'danger');
+                    return;
+                }
 
-            const searchInput = document.getElementById('searchInput');
-            const filterButtons = document.querySelectorAll('.btn-group .btn');
-            const bookCards = document.querySelectorAll('.book-card');
-            const noBooksMessage = document.getElementById('noBooksMessage');
+                // Prepare book request data
+                const bookRequestData = {
+                    title: bookTitle,
+                    author: bookAuthor,
+                    book_genre: bookGenre || 'Unspecified',
+                    status: 'to-read',
+                    user_id: user.id,
+                    request_reason: requestReason,
+                    created_at: new Date().toISOString()
+                };
 
-            console.log('Search Input:', searchInput);
-            console.log('Filter Buttons:', filterButtons);
-            console.log('Book Cards:', bookCards);
-            console.log('No Books Message:', noBooksMessage);
+                // Insert book request into Supabase
+                const { data, error } = await supabase
+                    .from('books')
+                    .insert([bookRequestData])
+                    .select();
 
-            // Search functionality
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                let visibleBooks = 0;
+                if (error) {
+                    console.error('Error submitting book request:', error);
+                    showFeedback(`Failed to submit book request: ${error.message}`, 'danger');
+                    return;
+                }
 
-                bookCards.forEach(card => {
-                    const title = card.querySelector('.card-title').textContent.toLowerCase();
-                    const author = card.querySelector('.card-text').textContent.toLowerCase();
-                    const genre = card.getAttribute('data-genre');
-                    const activeFilter = document.querySelector('.btn-group .btn.active').getAttribute('data-filter');
-
-                    const matchesSearch = title.includes(searchTerm) || author.includes(searchTerm);
-                    const matchesFilter = activeFilter === 'all' || genre === activeFilter;
-
-                    if (matchesSearch && matchesFilter) {
-                        card.style.display = 'block';
-                        visibleBooks++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                // Toggle no books message
-                noBooksMessage.classList.toggle('d-none', visibleBooks > 0);
-            });
-
-            // Filter functionality
-            filterButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Success feedback
+                showFeedback('Book request submitted successfully!', 'success');
+                
+                // Close modal after a short delay
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('bookRequestModal'));
+                    modal.hide();
                     
-                    // Add active class to clicked button
-                    this.classList.add('active');
+                    // Optional: Refresh books or update UI
+                    fetchAndRenderBooks();
+                }, 2000);
 
-                    const filter = this.getAttribute('data-filter');
-                    let visibleBooks = 0;
+            } catch (err) {
+                console.error('Unexpected error:', err);
+                showFeedback('An unexpected error occurred. Please try again.', 'danger');
+            } finally {
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Submit Request';
+            }
+        }
 
-                    bookCards.forEach(card => {
-                        const genre = card.getAttribute('data-genre');
-                        const matchesSearch = card.style.display !== 'none';
-                        const matchesFilter = filter === 'all' || genre === filter;
+        // Utility function to show feedback messages
+        function showFeedback(message, type = 'info', clear = false) {
+            const feedbackElement = document.getElementById('requestFormFeedback');
+            
+            if (clear) {
+                feedbackElement.classList.add('d-none');
+                feedbackElement.innerHTML = '';
+                return;
+            }
+            
+            feedbackElement.innerHTML = message;
+            feedbackElement.className = `alert alert-${type}`;
+            
+            if (message) {
+                feedbackElement.classList.remove('d-none');
+            } else {
+                feedbackElement.classList.add('d-none');
+            }
+        }
 
-                        if (matchesSearch && matchesFilter) {
-                            card.style.display = 'block';
-                            visibleBooks++;
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-
-                    // Toggle no books message
-                    noBooksMessage.classList.toggle('d-none', visibleBooks > 0);
-                });
-            });
-        });
+        // Attach event listener to form
+        document.getElementById('bookRequestForm').addEventListener('submit', submitBookRequest);
     </script>
 </body>
 </html>

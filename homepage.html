@@ -2,30 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Book Record System - Dashboard</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style/Stylesheet.css">
+    <style>
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand-logo {
+            max-height: 50px;
+            width: auto;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        /* Logout Link */
+        .navbar-nav .nav-item .text-danger {
+            transition: color 0.3s ease;
+        }
+
+
+        /* Card Typography */
+        .card-title {
+            font-weight: 500;
+            color: #495057;
+            letter-spacing: -0.5px;
+        }
+
+        .card-text.display-4 {
+            font-weight: 700;
+            color: #007bff;
+            letter-spacing: -1.5px;
+        }
+
+        /* Table Typography */
+        .table {
+            font-size: 0.95rem;
+        }
+
+        .table thead th {
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile and Responsive Improvements */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 10px;
+                margin: 0;
+                width: 100%;
+            }
+
+            .navbar {
+                padding: 0.5rem;
+            }
+
+            .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .navbar-brand-logo {
+                max-height: 35px;
+                margin-right: 5px;
+            }
+
+            .navbar-nav .nav-item {
+                text-align: center;
+                margin-bottom: 10px;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .card {
+                margin-bottom: 15px;
+            }
+
+            .table {
+                font-size: 0.8rem;
+            }
+
+            .table th, .table td {
+                padding: 0.5rem;
+            }
+
+            .btn-sm {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            #addBookBtn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .card-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+        }
+
+        /* Ultra Small Devices */
+        @media (max-width: 480px) {
+            body {
+                font-size: 12px;
+            }
+
+            .table {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Ensure proper touch targets */
+        @media (max-width: 768px) {
+            * {
+                touch-action: manipulation;
+            }
+
+            .btn, .nav-link, .form-control {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Responsive Table */
+        @media (max-width: 768px) {
+            .table-responsive-stack tr {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-orient: vertical;
+                -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                        flex-direction: column;
+                margin-bottom: 1rem;
+                border: 1px solid #ddd;
+            }
+            
+            .table-responsive-stack td {
+                display: block;
+            }
+            
+            .table-responsive-stack td:first-child {
+                font-weight: bold;
+                background-color: #f8f9fa;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">Book Record System</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand navbar-logo" href="homepage.html">
+                <img src="logo/mcpilogotransparent.png" alt="MCPI Library Logo" class="navbar-brand-logo w-50 h-50">
+                Senior High School Library / MCPI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="dashboardLink">Dashboard</a>
+                        <a class="nav-link" href="homepage.html">Dashboard</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="booksLink">My Books</a>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="discoverbooks.html">Discover</a>
                     </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="books.html">My Books</a>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="profileLink">Profile</a>
                     </li>
@@ -38,59 +200,33 @@
     </nav>
 
     <!-- Dashboard Content -->
-    <div class="container mt-5 p-5">
+    <div class="container mt-4 p-3">
         <!-- Error Message Container -->
         <div id="bookErrorMessage" class="alert alert-danger" style="display: none;"></div>
-
         <div class="row">
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Books</h5>
-                        <p class="card-text display-4" id="totalBooksCount">0</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Currently Reading</h5>
-                        <p class="card-text display-4" id="currentlyReadingCount">0</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Books Completed</h5>
-                        <p class="card-text display-4" id="completedBooksCount">0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        Recently Added Books
-                        <a href="#" class="btn btn-primary btn-sm" id="addBookBtn">+ Add Book</a>
+                        <h5 class="mb-0">Recently Added Books</h5>
+                        <a href="#" class="btn btn-primary btn-sm mt-2" id="addBookBtn">+ Add Book</a>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-hover" id="recentBooksTable">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>Status</th>
-                                    <th>Added Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentBooksTableBody">
-                                <!-- Books will be dynamically populated here -->
-                            </tbody>
-                        </table>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-responsive-stack" id="recentBooksTable">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Author</th>
+                                        <th>Status</th>
+                                        <th>Added Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentBooksTableBody">
+                                    <!-- Books will be dynamically populated here -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

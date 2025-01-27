@@ -47,13 +47,22 @@
             config.ANON_KEY
         );
 
-        // DOM Elements
+        // DOM Elements with safe retrieval
         const totalBooksCount = document.getElementById('totalBooksCount');
         const currentlyReadingCount = document.getElementById('currentlyReadingCount');
         const completedBooksCount = document.getElementById('completedBooksCount');
         const recentBooksTableBody = document.getElementById('recentBooksTableBody');
         const addBookBtn = document.getElementById('addBookBtn');
         const logoutLink = document.getElementById('logoutLink');
+
+        // Safe text content setter
+        function safeSetTextContent(element, content) {
+            if (element) {
+                element.textContent = content;
+            } else {
+                console.warn(`Element not found when trying to set text content: ${content}`);
+            }
+        }
 
         // Authentication Check
         async function checkAuthentication() {
@@ -138,31 +147,40 @@
                 // If no books found, update UI accordingly
                 if (!books || books.length === 0) {
                     console.log('No books found for user');
-                    totalBooksCount.textContent = '0';
-                    currentlyReadingCount.textContent = '0';
-                    completedBooksCount.textContent = '0';
-                    recentBooksTableBody.innerHTML = '<tr><td colspan="5">No books added yet</td></tr>';
+                    safeSetTextContent(totalBooksCount, '0');
+                    safeSetTextContent(currentlyReadingCount, '0');
+                    safeSetTextContent(completedBooksCount, '0');
+                    
+                    if (recentBooksTableBody) {
+                        recentBooksTableBody.innerHTML = '<tr><td colspan="5">No books added yet</td></tr>';
+                    } else {
+                        console.warn('recentBooksTableBody element not found');
+                    }
                     return;
                 }
 
                 // Existing book statistics logic
-                totalBooksCount.textContent = books.length;
-                currentlyReadingCount.textContent = books.filter(book => book.status === 'reading').length;
-                completedBooksCount.textContent = books.filter(book => book.status === 'completed').length;
+                safeSetTextContent(totalBooksCount, books.length.toString());
+                safeSetTextContent(currentlyReadingCount, books.filter(book => book.status === 'reading').length.toString());
+                safeSetTextContent(completedBooksCount, books.filter(book => book.status === 'completed').length.toString());
 
                 // Populate Recent Books
-                const sortedBooks = books.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
-                recentBooksTableBody.innerHTML = sortedBooks.map(book => `
-                    <tr>
-                        <td>${book.title}</td>
-                        <td>${book.author}</td>
-                        <td><span class="badge bg-${getStatusColor(book.status)}">${book.status}</span></td>
-                        <td>${new Date(book.created_at).toLocaleDateString()}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info" onclick="viewBookDetails('${book.id}')">View</button>
-                        </td>
-                    </tr>
-                `).join('');
+                if (recentBooksTableBody) {
+                    const sortedBooks = books.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5);
+                    recentBooksTableBody.innerHTML = sortedBooks.map(book => `
+                        <tr>
+                            <td>${book.title}</td>
+                            <td>${book.author}</td>
+                            <td><span class="badge bg-${getStatusColor(book.status)}">${book.status}</span></td>
+                            <td>${new Date(book.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewBookDetails('${book.id}')">View</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    console.warn('recentBooksTableBody element not found');
+                }
             } catch (catchError) {
                 console.error('Unexpected error in fetchBookStatistics:', catchError);
                 
@@ -186,9 +204,13 @@
         }
 
         // Event Listeners
-        addBookBtn.addEventListener('click', () => {
-            window.location.href = 'books.html';
-        });
+        if (addBookBtn) {
+            addBookBtn.addEventListener('click', () => {
+                window.location.href = 'books.html';
+            });
+        } else {
+            console.warn('addBookBtn element not found');
+        }
 
         // Remove existing logout event listener
         // Logout functionality will be handled by global logout function in script.js
