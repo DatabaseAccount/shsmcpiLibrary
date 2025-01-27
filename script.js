@@ -234,7 +234,7 @@
                 }
             }
 
-            return errors.length > 0 ? errors : null;
+            return errors;
         },
 
         // Robust element value retrieval with comprehensive null and error handling
@@ -931,6 +931,13 @@
                 try {
                     // Validate form data
                     const validationErrors = AuthModule.validateForm('login', formData);
+                    
+                    // Add defensive checks
+                    if (!validationErrors) {
+                        console.error('Validation errors is null or undefined');
+                        throw new Error('Validation process failed');
+                    }
+
                     if (validationErrors.length > 0) {
                         throw new Error(validationErrors.join(', '));
                     }
@@ -951,6 +958,7 @@
 
                 } catch (error) {
                     console.error('Login error:', error);
+                    console.error('Error stack:', error.stack);
 
                     // Display error message
                     if (errorMessageElement) {
