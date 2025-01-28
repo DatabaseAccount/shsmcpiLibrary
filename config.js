@@ -1,108 +1,46 @@
 // Supabase Configuration
-const SUPABASE_CONFIG = {
-    URL: 'https://nlupsphgfpvgghkkjsbu.supabase.co',
-    ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdXBzcGhnZnB2Z2doa2tqc2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4NDIzNTMsImV4cCI6MjA1MzQxODM1M30.CV6f57QriX3S9tEPN0lmb3AiH8wylvzHfxgqDEGSLMw',
-    
-    // Additional configuration for user management
-    AUTH_CONFIG: {
-        // Ensure user creation is allowed
-        allowSignup: true,
-        
-        // Configure user metadata handling
-        metadataOptions: {
-            allowedFields: ['full_name'],
-            maxMetadataSize: 1024  // Limit metadata size
-        }
-    }
+const SUPABASE_URL = 'https://nlupsphgfpvgghkkjsbu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdXBzcGhnZnB2Z2doa2tqc2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4NDIzNTMsImV4cCI6MjA1MzQxODM1M30.CV6f57QriX3S9tEPN0lmb3AiH8wylvzHfxgqDEGSLMw';
+
+// Verify configuration values
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error('Missing Supabase configuration values');
+}
+
+// Set global configuration
+window.SUPABASE_CONFIG = {
+    URL: SUPABASE_URL,
+    ANON_KEY: SUPABASE_ANON_KEY
 };
 
-// Ensure global exposure
-window.SUPABASE_CONFIG = SUPABASE_CONFIG;
+// Log configuration
+console.log('Supabase configuration loaded:', {
+    hasUrl: !!SUPABASE_URL,
+    hasKey: !!SUPABASE_ANON_KEY,
+    urlLength: SUPABASE_URL.length,
+    keyLength: SUPABASE_ANON_KEY.length
+});
 
-// Optional: Log configuration for debugging
-console.log('Supabase configuration loaded:', SUPABASE_CONFIG);
-
-// Validation Configuration
-window.VALIDATION = {
+// Validation configuration
+window.VALIDATION_CONFIG = {
     email: {
-        // Comprehensive regex for MCPI email validation
-        regex: /^[a-zA-Z0-9._%+-]+@mcpi\.edu\.ph$/i,
-        message: 'Please enter a valid MCPI email address',
-        
-        // Enhanced validation method
+        maxLength: 254,  // RFC 5321
+        pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         validate(email) {
-            // Trim whitespace
-            email = email.trim();
-            
-            // Check if email matches the regex
-            if (!this.regex.test(email)) {
-                return 'Invalid email format. Must be @mcpi.edu.ph';
-            }
-            
-            // Additional checks
-            const [localPart, domain] = email.split('@');
-            
-            // Ensure local part is not empty
-            if (localPart.length === 0) {
-                return 'Email username cannot be empty';
-            }
-            
-            // Optional: Additional domain-specific checks
-            if (domain !== 'mcpi.edu.ph') {
-                return 'Only @mcpi.edu.ph emails are allowed';
-            }
-            
-            // Optional: Length restrictions
-            if (email.length > 254) {
-                return 'Email address is too long';
-            }
-            
-            // Passed all checks
+            if (!email) return 'Email is required';
+            if (email.length > this.maxLength) return `Email must be less than ${this.maxLength} characters`;
+            if (!this.pattern.test(email)) return 'Invalid email format';
             return null;
         }
     },
     password: {
-        minLength: 6,  // Supabase default minimum
-        maxLength: 72, // Supabase maximum password length
-        requirements: [
-            { type: 'uppercase', required: true },
-            { type: 'lowercase', required: true },
-            { type: 'number', required: true }
-        ],
+        minLength: 6,
+        maxLength: 72,
         validate(password) {
-            const errors = [];
-
-            // Length check
-            if (password.length < this.minLength) {
-                errors.push(`Password must be at least ${this.minLength} characters`);
-            }
-
-            if (password.length > this.maxLength) {
-                errors.push(`Password must be no more than ${this.maxLength} characters`);
-            }
-
-            // Requirement checks
-            this.requirements.forEach(req => {
-                switch(req.type) {
-                    case 'uppercase':
-                        if (req.required && !/[A-Z]/.test(password)) {
-                            errors.push('Password must contain an uppercase letter');
-                        }
-                        break;
-                    case 'lowercase':
-                        if (req.required && !/[a-z]/.test(password)) {
-                            errors.push('Password must contain a lowercase letter');
-                        }
-                        break;
-                    case 'number':
-                        if (req.required && !/[0-9]/.test(password)) {
-                            errors.push('Password must contain a number');
-                        }
-                        break;
-                }
-            });
-
-            return errors;
+            if (!password) return 'Password is required';
+            if (password.length < this.minLength) return `Password must be at least ${this.minLength} characters`;
+            if (password.length > this.maxLength) return `Password must be less than ${this.maxLength} characters`;
+            return null;
         }
     }
 };

@@ -4,15 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Online ICT Library System</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/Stylesheet.css">
 
-    <!-- Bootstrap JS and Popper.js -->
+    <!-- Essential Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style/Stylesheet.css">
+    
+    <!-- Supabase Setup -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://nlupsphgfpvgghkkjsbu.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5sdXBzcGhnZnB2Z2doa2tqc2J1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4NDIzNTMsImV4cCI6MjA1MzQxODM1M30.CV6f57QriX3S9tEPN0lmb3AiH8wylvzHfxgqDEGSLMw';
+        window.supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+
+    <!-- Application Configuration -->
+    <script src="config.js"></script>
+    
+    <!-- Application Script (loaded after configuration) -->
+    <script src="script.js"></script>
+
     <style>
         .navbar-logo {
             display: flex;
@@ -186,7 +202,7 @@
                             <label for="loginEmail" class="form-label">MCPI Account</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                <input type="email" class="form-control" id="loginEmail" placeholder="Enter your mcpi account" required>
+                                <input type="email" class="form-control" id="loginEmail" placeholder="Enter your mcpi account">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -229,49 +245,6 @@
         </div>
     </section>
 
-    <!-- Supabase Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-
-    <script>
-        // Ensure Supabase is globally available
-        (function() {
-            // Comprehensive Supabase library exposure
-            console.log('Supabase Library Loading:', {
-                supabaseGlobal: typeof supabase,
-                windowSupabase: typeof window.supabase,
-                supabaseLibraryMethods: supabase ? Object.keys(supabase) : 'N/A'
-            });
-
-            // Expose Supabase globally with multiple methods
-            if (typeof window.supabase === 'undefined') {
-                if (typeof supabase !== 'undefined') {
-                    // Expose entire supabase library
-                    window.supabase = supabase;
-                    
-                    // Explicitly expose createClient method if it exists
-                    if (typeof supabase.createClient === 'function') {
-                        window.createClient = supabase.createClient;
-                    }
-                    
-                    console.log('Supabase library fully exposed', {
-                        createClientMethod: typeof window.createClient,
-                        supabaseMethods: Object.keys(window.supabase)
-                    });
-                }
-            }
-
-            // Final verification
-            console.log('Supabase Exposure Result:', {
-                windowSupabase: typeof window.supabase,
-                createClientMethod: typeof window.createClient,
-                supabaseMethods: window.supabase ? Object.keys(window.supabase) : 'N/A'
-            });
-        })();
-    </script>
-
-    <script src="config.js"></script>
-    <script src="script.js"></script>
-
     <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -293,7 +266,10 @@
                         </div>
                         <div class="mb-3">
                             <label for="signupEmail" class="form-label">MCPI Email</label>
-                            <input type="email" class="form-control" id="signupEmail" name="email" required placeholder="your.name@mcpi.edu.ph">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="signupEmail" name="email" placeholder="your.name@mcpi.edu.ph">
+                            </div>
                             <div class="form-text text-muted">
                                 <i class="bi bi-info-circle me-2"></i>
                                 Only @mcpi.edu.ph email addresses are allowed
@@ -310,12 +286,12 @@
                             <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                                <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm your password" required name="confirmPassword">
+                                <input type="password" class="form-control" id="signupConfirmPassword" placeholder="Confirm your password" required>
                             </div>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success">
-                                <i class="bi bi-person-plus me-2"></i>Sign Up
+                                <i class="bi bi-person-plus me-2"></i>Create Account
                             </button>
                         </div>
                     </form>

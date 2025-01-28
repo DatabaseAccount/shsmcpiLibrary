@@ -33,122 +33,52 @@
 
     // Authentication and Validation Module
     const AuthModule = {
-        // Supabase client instance
-        supabase: null,
+        // Get Supabase client
+        getSupabase() {
+            if (!window.supabaseClient) {
+                throw new Error('Supabase client not initialized');
+            }
+            return window.supabaseClient;
+        },
+
+        // Initialize Supabase Client
+        async initSupabase() {
+            try {
+                return this.getSupabase();
+            } catch (error) {
+                console.error('Failed to get Supabase client:', error);
+                throw error;
+            }
+        },
 
         // Rate limit tracking
         _signupAttempts: 0,
         _lastSignupAttempt: 0,
 
-        // Initialize Supabase Client
-        initSupabase() {
-            console.log('Attempting Supabase Client Initialization');
-            
-            // Check if Supabase is already initialized
-            if (this.supabase) {
-                console.log('Supabase already initialized');
-                return this.supabase;
-            }
-
-            // Validate Supabase configuration
-            if (!window.SUPABASE_CONFIG) {
-                const configError = new Error('Supabase configuration is missing');
-                console.error(configError);
-                throw configError;
-            }
-
-            const { URL: supabaseUrl, ANON_KEY: supabaseAnonKey } = window.SUPABASE_CONFIG;
-
-            // Validate URL and Anon Key
-            if (!supabaseUrl || !supabaseAnonKey) {
-                const configError = new Error('Incomplete Supabase configuration');
-                console.error(configError, window.SUPABASE_CONFIG);
-                throw configError;
-            }
-
-            try {
-                // Detailed logging of Supabase library structure
-                console.log('Supabase library structure:', {
-                    supabaseType: typeof supabase,
-                    supabaseMethods: Object.keys(supabase),
-                    windowSupabaseType: typeof window.supabase,
-                    windowSupabaseMethods: window.supabase ? Object.keys(window.supabase) : 'N/A'
-                });
-
-                // Check if createClient exists in the library
-                if (typeof supabase.createClient === 'function') {
-                    console.log('Using supabase.createClient method');
-                    this.supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-                    return this.supabase;
-                }
-
-                // Check if the library itself is a function
-                if (typeof supabase === 'function') {
-                    console.log('Using supabase as a function');
-                    this.supabase = supabase(supabaseUrl, supabaseAnonKey);
-                    return this.supabase;
-                }
-
-                // Fallback to window.supabase methods
-                if (window.supabase) {
-                    console.log('Attempting to use window.supabase methods');
-                    
-                    // Check for createClient method
-                    if (typeof window.supabase.createClient === 'function') {
-                        console.log('Using window.supabase.createClient');
-                        this.supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-                        return this.supabase;
-                    }
-
-                    // Alternative method using auth
-                    if (window.supabase.auth) {
-                        console.log('Using window.supabase.auth initialization');
-                        this.supabase = {
-                            auth: window.supabase.auth,
-                            url: supabaseUrl,
-                            key: supabaseAnonKey
-                        };
-                        return this.supabase;
-                    }
-                }
-
-                // If all attempts fail
-                throw new Error('Cannot find a valid method to create Supabase client');
-
-            } catch (error) {
-                console.error('Supabase initialization error:', error);
-                console.error('Supabase URL:', supabaseUrl);
-                console.error('Anon Key Length:', supabaseAnonKey?.length);
-                console.error('Supabase library details:', {
-                    supabaseType: typeof supabase,
-                    supabaseMethods: Object.keys(supabase),
-                    windowSupabase: window.supabase
-                });
-
-                throw new Error(`Supabase initialization failed: ${error.message}`);
-            }
-        },
-
         // Method to check and manage signup rate limits
         _checkSignupRateLimit() {
             const now = Date.now();
-            const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
-            const MAX_ATTEMPTS = 5; // Maximum signup attempts in the window
+            const RATE_LIMIT_WINDOW = 5 * 60 * 1000; // 5 minutes instead of 15
+            const MAX_ATTEMPTS = 10; // Increased from 5 to 10 attempts
 
             // Reset attempts if outside the time window
             if (now - this._lastSignupAttempt > RATE_LIMIT_WINDOW) {
                 this._signupAttempts = 0;
+                this._lastSignupAttempt = now;
+                return true;
+            }
+
+            // Check if rate limit is exceeded
+            if (this._signupAttempts >= MAX_ATTEMPTS) {
+                const waitTimeMs = RATE_LIMIT_WINDOW - (now - this._lastSignupAttempt);
+                const waitTimeMin = Math.ceil(waitTimeMs / 60000);
+                throw new Error(`Too many signup attempts. Please wait ${waitTimeMin} minute${waitTimeMin > 1 ? 's' : ''} before trying again.`);
             }
 
             // Increment attempts
             this._signupAttempts++;
             this._lastSignupAttempt = now;
-
-            // Check if rate limit is exceeded
-            if (this._signupAttempts > MAX_ATTEMPTS) {
-                const waitTime = Math.ceil((RATE_LIMIT_WINDOW - (now - this._lastSignupAttempt)) / 60000);
-                throw new Error(`Too many signup attempts. Please wait ${waitTime} minutes before trying again.`);
-            }
+            return true;
         },
 
         // Update UI based on authentication state
@@ -290,139 +220,108 @@
             }
         },
 
-        // Modify signup method to include comprehensive error handling
-        signUp(formData) {
+        // Method to show message in login modal
+        showLoginMessage(message, isSuccess = false) {
+            const messageContainer = document.getElementById('loginModalMessage');
+            if (!messageContainer) return;
+
+            // Clear previous messages
+            messageContainer.innerHTML = '';
+
+            // Create message element
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('alert', isSuccess ? 'alert-success' : 'alert-danger');
+            messageEl.textContent = message;
+
+            // Append message
+            messageContainer.appendChild(messageEl);
+
+            // Optional: Auto-remove message after 5 seconds
+            if (isSuccess) {
+                setTimeout(() => {
+                    messageContainer.innerHTML = '';
+                }, 5000);
+            }
+        },
+
+        async signUp(formData) {
             try {
-                // Check rate limiting before proceeding
-                this._checkSignupRateLimit();
-            } catch (rateLimitError) {
-                this.showSignupMessage(rateLimitError.message, false);
-                return Promise.reject(rateLimitError);
-            }
+                // Get form data
+                const email = formData.email.trim();
+                const password = formData.password;
+                const fullName = formData.fullName.trim();
 
-            // Validate form data first
-            const validationErrors = this.validateForm('signup', formData);
-            
-            if (validationErrors.length > 0) {
-                // Show all validation errors
-                const errorMessage = validationErrors.join('\n');
-                this.showSignupMessage(errorMessage, false);
-                return Promise.reject(new Error(errorMessage));
-            }
-
-            // Proceed with Supabase signup
-            return this.initSupabase().auth.signUp({
-                email: formData.email,
-                password: formData.password,
-                options: {
-                    // Explicitly disable email confirmation
-                    emailRedirectTo: null,
-                    data: {
-                        full_name: formData.fullName || ''
-                    },
-                    shouldCreateUser: true // Explicitly create user
-                }
-            }).then(({ data, error }) => {
-                // Comprehensive logging of signup response
-                console.log('Detailed Signup Response:', {
-                    data: data ? {
-                        user: data.user ? 'User object exists' : 'No user object',
-                        session: data.session ? 'Session object exists' : 'No session object'
-                    } : 'No data object',
-                    error: error ? {
-                        name: error.name,
-                        message: error.message,
-                        status: error.status
-                    } : 'No error'
-                });
-
-                // Successful user creation
-                if (data?.user) {
-                    this.showSignupMessage('Signup successful! You can now log in.', true);
-                    return data.user;
+                // Basic validation
+                if (!email || !password || !fullName) {
+                    throw new Error('All fields are required');
                 }
 
-                // Handle specific error scenarios
-                if (error) {
-                    let userFriendlyMessage = 'Signup failed. ';
-                    
-                    // Detailed error handling
-                    switch (error.message) {
-                        case 'User already exists':
-                            userFriendlyMessage += 'An account with this email already exists.';
-                            break;
-                        case 'Rate limit exceeded':
-                        case 'email rate limit exceeded':
-                            userFriendlyMessage += 'Too many signup attempts. Please wait 15 minutes and try again.';
-                            break;
-                        case 'Email not confirmed':
-                        case 'email not confirmed':
-                            userFriendlyMessage += 'Please complete email verification or contact support.';
-                            break;
-                        case 'Database error saving new user':
-                            userFriendlyMessage += 'There was a problem saving your user information.';
-                            break;
-                        default:
-                            userFriendlyMessage += error.message;
+                // Get Supabase client
+                const supabase = this.getSupabase();
+
+                // Attempt signup
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName
+                        }
                     }
-                    
-                    // Log the original error for debugging
-                    console.error('Detailed Signup Error:', {
-                        errorName: error.name,
-                        errorMessage: error.message,
-                        errorStatus: error.status,
-                        fullError: error
-                    });
-                    
-                    // Show user-friendly message
-                    this.showSignupMessage(userFriendlyMessage, false);
-                    
-                    return Promise.reject(error);
-                }
-
-                // Unexpected scenario
-                this.showSignupMessage('An unexpected error occurred during signup. Please try again.', false);
-                return Promise.reject(new Error('Unexpected signup result'));
-
-            }).catch(error => {
-                console.error('Signup Catch Block Error:', error);
-                
-                // Additional error logging
-                console.error('Error Details:', {
-                    name: error.name,
-                    message: error.message,
-                    status: error.status,
-                    stack: error.stack
                 });
 
-                // More informative error message
-                const userFriendlyMessage = `Signup failed: ${error.message}. Please try again or contact support.`;
-                this.showSignupMessage(userFriendlyMessage, false);
-                
-                return Promise.reject(error);
-            });
+                if (error) throw error;
+
+                if (!data.user) {
+                    throw new Error('Signup failed - no user data received');
+                }
+
+                // Show success message
+                this.showSignupMessage('Signup successful! Please check your email for verification.', true);
+
+                // Close modal after delay
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                }, 2000);
+
+                return data;
+            } catch (error) {
+                console.error('Signup Error:', error);
+                const message = error.message || 'An unexpected error occurred';
+                this.showSignupMessage(message, false);
+                throw error;
+            }
         },
 
         // Authentication Methods
-        login(formData) {
-            // Validate form data first
-            const validationErrors = this.validateForm('login', formData);
-            
-            if (validationErrors.length > 0) {
-                // Show all validation errors
-                const errorMessage = validationErrors.join('\n');
-                this.showSignupMessage(errorMessage, false);
-                return Promise.reject(new Error(errorMessage));
-            }
+        async login(formData) {
+            try {
+                // Initialize Supabase first
+                await this.initSupabase();
+                
+                // Validate form data first
+                const validationErrors = this.validateForm('login', formData);
+                
+                if (validationErrors.length > 0) {
+                    // Show all validation errors
+                    const errorMessage = validationErrors.join('\n');
+                    this.showLoginMessage(errorMessage, false);
+                    return Promise.reject(new Error(errorMessage));
+                }
 
-            // Proceed with Supabase login
-            return this.initSupabase().auth.signInWithPassword({
-                email: formData.email,
-                password: formData.password
-            }).then(({ data, error }) => {
+                // Proceed with Supabase login
+                const { data, error } = await this.getSupabase().auth.signInWithPassword({
+                    email: formData.email,
+                    password: formData.password
+                });
+
                 if (error) {
                     // More specific error handling
                     let userFriendlyMessage = 'Login failed. ';
+                    
                     switch (error.message) {
                         case 'Invalid login credentials':
                             userFriendlyMessage += 'Incorrect email or password.';
@@ -434,24 +333,33 @@
                             userFriendlyMessage += error.message;
                     }
                     
-                    this.showSignupMessage(userFriendlyMessage, false);
+                    this.showLoginMessage(userFriendlyMessage, false);
                     return Promise.reject(error);
                 }
 
                 // Check if user was logged in successfully
                 if (data.user) {
-                    this.showSignupMessage('Login successful!', true);
+                    this.showLoginMessage('Login successful!', true);
                     window.location.href = 'homepage.html';
                     return data.user;
                 } else {
-                    this.showSignupMessage('Login process incomplete. Please try again.', false);
+                    this.showLoginMessage('Login process incomplete. Please try again.', false);
                     return Promise.reject(new Error('Login process incomplete'));
                 }
-            }).catch(error => {
+            } catch (error) {
                 console.error('Login error:', error);
-                this.showSignupMessage(`An unexpected error occurred: ${error.message}`, false);
+                this.showLoginMessage(`An unexpected error occurred: ${error.message}`, false);
                 return Promise.reject(error);
-            });
+            }
+        },
+
+        // Method to show error message
+        displayErrorMessage(message) {
+            const errorMessageElement = document.getElementById('errorMessage');
+            if (errorMessageElement) {
+                errorMessageElement.textContent = message;
+                errorMessageElement.style.display = 'block';
+            }
         },
 
         async logout() {
@@ -461,7 +369,7 @@
                 sessionStorage.clear();
 
                 // Sign out from Supabase
-                const { error } = await this.initSupabase().auth.signOut();
+                const { error } = await this.getSupabase().auth.signOut();
                 
                 if (error) {
                     console.error('Logout Error:', error);
@@ -528,6 +436,122 @@
                 console.error('Signup modal element not found');
             }
         },
+
+        getSignupFields() {
+            const email = document.querySelector('#signupEmail')?.value?.trim();
+            const password = document.querySelector('#signupPassword')?.value;
+            const confirmPassword = document.querySelector('#signupConfirmPassword')?.value;
+            const fullName = document.querySelector('#signupName')?.value?.trim();
+
+            // Log field presence for debugging
+            console.log('Signup fields present:', {
+                hasEmail: !!email,
+                hasPassword: !!password,
+                hasFullName: !!fullName,
+                hasConfirmPassword: !!confirmPassword
+            });
+
+            // Validate required fields
+            if (!email) throw new Error('Email is required');
+            if (!password) throw new Error('Password is required');
+            if (!confirmPassword) throw new Error('Please confirm your password');
+            if (!fullName) throw new Error('Full name is required');
+
+            // Validate email format
+            if (!this.validateEmail(email)) {
+                throw new Error('Please enter a valid email address');
+            }
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                throw new Error('Passwords do not match');
+            }
+
+            return {
+                email,
+                password,
+                confirmPassword,
+                fullName
+            };
+        },
+
+        getLoginFields() {
+            const email = document.getElementById('loginEmail')?.value;
+            const password = document.getElementById('loginPassword')?.value;
+
+            if (!email || !password) {
+                throw new Error('Required login fields are missing');
+            }
+
+            return { email, password };
+        },
+    };
+
+    // Book Order Module
+    const OrderModule = {
+        async submitOrder(bookId) {
+            try {
+                // Initialize Supabase if not already initialized
+                const supabase = await AuthModule.initSupabase();
+                
+                // Check if user is authenticated
+                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+                if (sessionError || !session) {
+                    throw new Error('Please log in to order books');
+                }
+
+                // Get the current user
+                const userId = session.user.id;
+                
+                // Create the order in the orders table
+                const { data: order, error: orderError } = await supabase
+                    .from('orders')
+                    .insert([
+                        {
+                            user_id: userId,
+                            book_id: bookId,
+                            status: 'pending',
+                            order_date: new Date().toISOString()
+                        }
+                    ])
+                    .select()
+                    .single();
+
+                if (orderError) {
+                    console.error('Order creation error:', orderError);
+                    throw new Error('Failed to create order. Please try again.');
+                }
+
+                // Update the book status to 'Borrowed'
+                const { error: updateError } = await supabase
+                    .from('books')
+                    .update({ status: 'Borrowed' })
+                    .eq('id', bookId);
+
+                if (updateError) {
+                    console.error('Book status update error:', updateError);
+                    // Rollback the order if book update fails
+                    await supabase
+                        .from('orders')
+                        .delete()
+                        .eq('id', order.id);
+                    throw new Error('Failed to update book status. Please try again.');
+                }
+
+                return {
+                    success: true,
+                    message: 'Order placed successfully!',
+                    orderId: order.id
+                };
+
+            } catch (error) {
+                console.error('Order submission error:', error);
+                return {
+                    success: false,
+                    message: error.message || 'Failed to place order. Please try again.'
+                };
+            }
+        }
     };
 
     // Comprehensive signup form debugging function
@@ -685,66 +709,98 @@
         }
 
         // Add submit event listener
-        signupForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            try {
-                // Comprehensive element checks
-                const nameInput = this.querySelector('#signupName');
-                const emailInput = this.querySelector('#signupEmail');
-                const passwordInput = this.querySelector('#signupPassword');
-                const confirmPasswordInput = this.querySelector('#signupConfirmPassword');
-                const submitButton = this.querySelector('button[type="submit"]');
-
-                // Detailed logging of input elements
-                console.log('Signup Form Inputs:', {
-                    nameInput: !!nameInput,
-                    emailInput: !!emailInput,
-                    passwordInput: !!passwordInput,
-                    confirmPasswordInput: !!confirmPasswordInput,
-                    submitButton: !!submitButton
-                });
-
-                // Disable submit button to prevent multiple submissions
-                if (submitButton) {
-                    submitButton.disabled = true;
+        if (signupForm) {
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    const formData = AuthModule.getSignupFields();
+                    // Basic validation
+                    if (!formData.email || !formData.password || !formData.fullName) {
+                        throw new Error('All fields are required');
+                    }
+        
+                    // Attempt signup
+                    const result = await AuthModule.signUp(formData);
+                    // More detailed error handling
+                    if (result.success) {
+                        alert(result.message);
+                        // Optional: Close signup modal or redirect
+                    } else {
+                        // Log full error details to console
+                        console.log('Signup Failed:', result.fullError);
+                        // Show user-friendly error message
+                        alert(result.message);
+                    }
+                } catch (error) {
+                    console.log('Unexpected Signup Error:', error);
+                    alert('An unexpected error occurred during signup. Please try again.');
+                } finally {
+                    // Re-enable the submit button...
+                    const submitButton = e.target.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Sign Up';
+                    }
                 }
-
-                // Attempt signup with comprehensive input validation
-                const signupResult = await AuthModule.signUp({
-                    fullName: nameInput ? nameInput.value : '',
-                    email: emailInput ? emailInput.value : '',
-                    password: passwordInput ? passwordInput.value : '',
-                    confirmPassword: confirmPasswordInput ? confirmPasswordInput.value : ''
-                });
-
-                // Safely check signup result
-                if (signupResult && signupResult.success) {
-                    console.log('Signup successful');
-                } else if (signupResult) {
-                    console.error('Signup failed:', signupResult.message);
-                }
-            } catch (error) {
-                // Log the error for debugging
-                console.error('Signup Error:', error);
-            } finally {
-                // Re-enable submit button
-                const submitButton = this.querySelector('button[type="submit"]');
-                if (submitButton) {
-                    submitButton.disabled = false;
-                }
-            }
-        });
+            });
+        }
 
         console.log('Signup form event listener added successfully');
+        
+        // Add event listener for opening the modal
+        const signupModal = document.getElementById('signupModal');
+        if (signupModal) {
+            signupModal.addEventListener('shown.bs.modal', () => {
+                console.log('Signup modal opened');
+                // Reset form fields
+                signupForm.reset();
+            });
+        }
     }
 
     // Ensure the listener is added after DOM is fully loaded
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupSignupFormListener);
-    } else {
-        setupSignupFormListener();
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signupForm'); // Ensure this ID matches your HTML
+            if (signupForm) {
+                signupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    try {
+                        const formData = AuthModule.getSignupFields();
+                        // Basic validation
+                        if (!formData.email || !formData.password || !formData.fullName) {
+                            throw new Error('All fields are required');
+                        }
+
+                        // Attempt signup
+                        const result = await AuthModule.signUp(formData);
+                        // More detailed error handling
+                        if (result.success) {
+                            alert(result.message);
+                            // Optional: Close signup modal or redirect
+                        } else {
+                            // Log full error details to console
+                            console.log('Signup Failed:', result.fullError);
+                            // Show user-friendly error message
+                            alert(result.message);
+                        }
+                    } catch (error) {
+                        console.log('Unexpected Signup Error:', error);
+                        alert('An unexpected error occurred during signup. Please try again.');
+                    } finally {
+                        // Re-enable the submit button...
+                        const submitButton = e.target.querySelector('button[type="submit"]');
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = 'Sign Up';
+                        }
+                    }
+                });
+            } else {
+                console.error('Signup form not found');
+            }
+        });
+    });
 
     // Additional global debugging
     window.addEventListener('load', () => {
@@ -761,7 +817,6 @@
         cardCol.setAttribute('data-genre', book.genre || 'unknown');
         cardCol.setAttribute('data-status', book.status || 'available');
 
-        // Construct the card HTML
         cardCol.innerHTML = `
             <div class="card h-100 shadow-sm">
                 <img src="${book.coverImage || 'https://via.placeholder.com/300x450?text=Book+Cover'}" 
@@ -778,10 +833,18 @@
                     <small class="text-muted">
                         ${book.status === 'Available' ? 'Available' : 'Borrowed'}
                     </small>
-                    <button class="btn btn-sm btn-outline-primary" 
-                            onclick="viewBookDetails('${book.id}')">
-                        Details
-                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-outline-primary" 
+                                onclick="viewBookDetails('${book.id}')">
+                            Details
+                        </button>
+                        ${book.status === 'Available' ? `
+                            <button class="btn btn-sm btn-success" 
+                                    onclick="orderBook('${book.id}')">
+                                Order
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         `;
@@ -832,6 +895,26 @@
     window.populateBooksList = populateBooksList;
     window.createBookCard = createBookCard;
     window.viewBookDetails = viewBookDetails;
+
+    // Global order function
+    async function orderBook(bookId) {
+        try {
+            const result = await OrderModule.submitOrder(bookId);
+            if (result.success) {
+                alert(result.message);
+                // Refresh the book list or update the UI
+                location.reload();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Order error:', error);
+            alert(error.message || 'Failed to place order. Please try again.');
+        }
+    }
+
+    // Expose necessary functions globally
+    window.orderBook = orderBook;
 
     // Example book data (this would typically come from a database)
     const sampleBooks = [
@@ -921,10 +1004,7 @@
                     errorMessageElement.style.display = 'none';
                 }
 
-                const formData = {
-                    email: loginForm.querySelector('#loginEmail').value,
-                    password: loginForm.querySelector('#loginPassword').value
-                };
+                const formData = AuthModule.getLoginFields();
 
                 console.log('Login attempt:', { email: formData.email });
 
@@ -972,27 +1052,15 @@
         if (signupForm) {
             signupForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const formData = {
-                    fullName: signupForm.querySelector('#signupName').value,
-                    email: signupForm.querySelector('#signupEmail').value,
-                    password: signupForm.querySelector('#signupPassword').value,
-                    confirmPassword: signupForm.querySelector('#signupConfirmPassword').value
-                };
-
-                const validationErrors = AuthModule.validateForm('signup', formData);
-                if (validationErrors.length > 0) {
-                    // Show error message for validation errors
-                    const errorMessageElement = document.getElementById('signupErrorMessage');
-                    if (errorMessageElement) {
-                        errorMessageElement.textContent = validationErrors.join(', ');
-                        errorMessageElement.style.display = 'block';
-                    }
-                    throw new Error(validationErrors.join(', '));
-                }
-
                 try {
+                    const formData = AuthModule.getSignupFields();
+                    // Basic validation
+                    if (!formData.email || !formData.password || !formData.fullName) {
+                        throw new Error('All fields are required');
+                    }
+        
+                    // Attempt signup
                     const result = await AuthModule.signUp(formData);
-                    
                     // More detailed error handling
                     if (result.success) {
                         alert(result.message);
@@ -1000,13 +1068,19 @@
                     } else {
                         // Log full error details to console
                         console.log('Signup Failed:', result.fullError);
-                        
                         // Show user-friendly error message
                         alert(result.message);
                     }
                 } catch (error) {
                     console.log('Unexpected Signup Error:', error);
                     alert('An unexpected error occurred during signup. Please try again.');
+                } finally {
+                    // Re-enable the submit button...
+                    const submitButton = e.target.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Sign Up';
+                    }
                 }
             });
         }
@@ -1037,7 +1111,10 @@
             waitForSupabase()
                 .then((supabaseLib) => {
                     // Ensure we have a createClient method
-                    const createClientMethod = supabaseLib.createClient || supabaseLib;
+                    const createClientMethod = supabaseLib.createClient || supabaseLib.default?.createClient;
+                    if (!createClientMethod) {
+                        throw new Error('Supabase createClient not found');
+                    }
 
                     // Initialize Supabase client
                     const supabaseClient = createClientMethod(
@@ -1053,7 +1130,7 @@
                     );
 
                     // Set global Supabase client
-                    window.supabase = supabaseClient;
+                    window.supabaseClient = supabaseClient;
 
                     // Set up authentication listeners
                     supabaseClient.auth.onAuthStateChange((event, session) => {

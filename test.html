@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase Test</title>
+    <script src="supabase.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <div id="status">Testing Supabase...</div>
+    <script>
+        window.onload = async function() {
+            try {
+                const statusDiv = document.getElementById('status');
+                
+                // Check if Supabase is loaded
+                if (typeof supabase === 'undefined') {
+                    throw new Error('Supabase not loaded');
+                }
+                
+                // Check if createClient exists
+                if (typeof supabase.createClient !== 'function') {
+                    throw new Error('createClient not available');
+                }
+                
+                // Try to create a client
+                const client = supabase.createClient(
+                    window.SUPABASE_CONFIG.URL,
+                    window.SUPABASE_CONFIG.ANON_KEY
+                );
+                
+                // Try to get session
+                const { data, error } = await client.auth.getSession();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                statusDiv.style.color = 'green';
+                statusDiv.textContent = 'Supabase is working correctly!';
+                
+                console.log('Supabase test successful:', {
+                    client: !!client,
+                    auth: !!client.auth,
+                    session: data
+                });
+                
+            } catch (error) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.style.color = 'red';
+                statusDiv.textContent = 'Error: ' + error.message;
+                
+                console.error('Supabase test failed:', {
+                    error: error.message,
+                    supabaseExists: typeof supabase !== 'undefined',
+                    createClientExists: typeof supabase?.createClient === 'function',
+                    config: window.SUPABASE_CONFIG
+                });
+            }
+        };
+    </script>
+</body>
+</html>
